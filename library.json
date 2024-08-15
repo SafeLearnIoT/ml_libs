@@ -4,5 +4,8 @@
     "description": "ML",
     "keywords": "ML",
     "frameworks": "*",
-    "platforms": "*"
+    "platforms": "*",
+    "dependencies": {
+        "bblanchon/ArduinoJson": "~7.1.0"
+    }
 }
