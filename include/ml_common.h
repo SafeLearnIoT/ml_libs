@@ -16,6 +16,8 @@ public:
     }
 
     virtual JsonObject perform(tm time, float value) = 0;
+    virtual float predict(float x) = 0;
+    virtual void train() = 0;
 
 protected:
     std::vector<unsigned long> m_time; // Minutes since midnight

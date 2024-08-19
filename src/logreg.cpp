@@ -90,4 +90,9 @@ namespace Regression
         object["intercept"] = m_intercept;
         return object;
     }
+
+    float Logistic::predict(float x)
+    {
+        return 1 / (1 + exp(-1 * (m_intercept + (m_slope * x))));
+    }
 }
