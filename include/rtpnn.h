@@ -22,6 +22,8 @@ namespace RTPNN
 
     public:
         using ML::ML;
-        JsonObject perform(tm time, float value) override;
+        virtual JsonObject perform(tm time, float value) override;
+        virtual void train() override {};
+        virtual float predict(float x) override { return 0.0f; };
     };
 }

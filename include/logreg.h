@@ -15,8 +15,8 @@ namespace Regression
         float getElementLogisticCost(unsigned long &x, float &y, float &a, float &b);
         float getLogisticCost(float a, float b, float &da, float &db);
 
-        void train() override;
-        JsonObject perform(tm time, float value) override;
-        float predict(float x) override;
+        virtual void train() override;
+        virtual JsonObject perform(tm time, float value) override;
+        virtual float predict(float x) override;
     };
 }

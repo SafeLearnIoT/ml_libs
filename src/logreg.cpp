@@ -50,8 +50,8 @@ namespace Regression
 
     void Logistic::train()
     {
-        float lrate = 0.0005;
-        float threshold = 0.001;
+        float lrate = 0.005;
+        float threshold = 0.01;
         int iter = 0;
 
         while (true)

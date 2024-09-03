@@ -11,8 +11,8 @@ namespace Regression
     public:
         using ML::ML;
 
-        void train() override;
-        JsonObject perform(tm time, float value) override;
-        float predict(float x) override;
+        virtual void train() override;
+        virtual JsonObject perform(tm time, float value) override;
+        virtual float predict(float x) override;
     };
 }

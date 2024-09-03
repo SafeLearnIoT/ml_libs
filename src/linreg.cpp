@@ -41,6 +41,7 @@ namespace Regression
 
         object["m_b0"] = m_b0;
         object["m_b1"] = m_b1;
+        serializeJson(object, Serial);
         return object;
     }
 
