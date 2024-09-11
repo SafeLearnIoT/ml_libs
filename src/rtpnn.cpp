@@ -12,7 +12,7 @@ namespace RTPNN
         m_levels.push_back((m_level_param_1 * normalize(value, m_min, m_max)) + (m_level_param_2 * m_levels.back()));
     }
 
-    JsonObject SDP::perform(tm time, float value)
+    JsonObject SDP::perform(float value)
     {
         // First execution - Skip calculations, just add value to the Vector<T>
         if (!m_values.empty())

@@ -3,6 +3,14 @@
 #include <map>
 #include <ArduinoJson.h>
 
+enum MLAlgo
+{
+    None,
+    rTPNN,
+    LinReg,
+    LogReg
+};
+
 enum SensorType
 {
     Temperature = 0, // Min: -40     Max: 85       (Celcius degrees)
@@ -33,4 +41,18 @@ inline std::map<SensorType, SensorConfig> sensorConfigs = {
 inline float normalize(float value, float min, float max)
 {
     return static_cast<float>(value - min) / static_cast<float>(max - min);
+}
+
+inline double sigmoid(double z){
+    return 1/(1+exp(-z));
+}
+
+inline double dot(const std::vector<unsigned long>& a, const std::vector<double>& b) {
+    // Compute the dot product
+    int result = 0;
+    for (size_t i = 0; i < a.size(); ++i) {
+        result += a[i] * b[i];
+    }
+    
+    return result;
 }
