@@ -2,14 +2,21 @@
 #include <Arduino.h>
 #include <map>
 #include <ArduinoJson.h>
+#include <vector>
 
 enum MLAlgo
 {
     None,
     rTPNN,
     LinReg,
-    LogReg
+    LogReg,
+    MLP
 };
+
+inline std::map<MLAlgo, String> algoString = {
+    {rTPNN, "rTPNN"},
+    {LinReg, "LinReg"},
+    {LogReg, "LogReg"}};
 
 enum SensorType
 {
@@ -29,7 +36,7 @@ struct SensorConfig
 };
 
 inline std::map<SensorType, SensorConfig> sensorConfigs = {
-    {Temperature, {-40, 85}},
+    {Temperature, {10, 35}},
     {Humidity, {0, 100}},
     {IAQ, {0, 500}},
     {Pressure, {30000, 110000}},
@@ -43,16 +50,19 @@ inline float normalize(float value, float min, float max)
     return static_cast<float>(value - min) / static_cast<float>(max - min);
 }
 
-inline double sigmoid(double z){
-    return 1/(1+exp(-z));
+inline double sigmoid(double z)
+{
+    return 1 / (1 + exp(-z));
 }
 
-inline double dot(const std::vector<unsigned long>& a, const std::vector<double>& b) {
+inline double dot(const std::vector<unsigned long> &a, const std::vector<double> &b)
+{
     // Compute the dot product
     int result = 0;
-    for (size_t i = 0; i < a.size(); ++i) {
+    for (size_t i = 0; i < a.size(); ++i)
+    {
         result += a[i] * b[i];
     }
-    
+
     return result;
 }

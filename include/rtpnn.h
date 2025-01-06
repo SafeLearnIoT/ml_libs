@@ -7,8 +7,8 @@ namespace RTPNN
 {
     class SDP
     {
-        std::vector<int> m_time; // Minutes since midnight
-        std::vector<double> m_values;      // values
+        std::vector<int> m_time;      // Minutes since midnight
+        std::vector<double> m_values; // values
 
         std::vector<double> m_levels{0.5};
         std::vector<double> m_trends{0.5};
@@ -24,9 +24,13 @@ namespace RTPNN
 
         void calculate_trend(float &value);
         void calculate_level(float &value);
+        void calculate_prediction(float &value);
+        void mse();
+        void bptt();
 
     public:
-        SDP(SensorType sensor_type){
+        SDP(SensorType sensor_type)
+        {
             m_min = sensorConfigs.at(sensor_type).minValue;
             m_max = sensorConfigs.at(sensor_type).maxValue;
         };
