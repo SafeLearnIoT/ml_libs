@@ -45,24 +45,7 @@ inline std::map<SensorType, SensorConfig> sensorConfigs = {
     {Blinds, {0, 1}},
 };
 
-inline float normalize(float value, float min, float max)
+inline double normalize(double value, double min, double max)
 {
-    return static_cast<float>(value - min) / static_cast<float>(max - min);
-}
-
-inline double sigmoid(double z)
-{
-    return 1 / (1 + exp(-z));
-}
-
-inline double dot(const std::vector<unsigned long> &a, const std::vector<double> &b)
-{
-    // Compute the dot product
-    int result = 0;
-    for (size_t i = 0; i < a.size(); ++i)
-    {
-        result += a[i] * b[i];
-    }
-
-    return result;
+    return static_cast<double>(value - min) / static_cast<double>(max - min);
 }
