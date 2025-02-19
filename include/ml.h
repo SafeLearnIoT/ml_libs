@@ -15,28 +15,23 @@ protected:
     RTPNN::SDP *m_rtpnn;
 
 public:
-    explicit ML(SensorType sensor_type, String name) : m_sensor_type(sensor_type), m_name(name)
+    ML(SensorType sensor_type, String name) : m_sensor_type(sensor_type), m_name(name)
     {
         m_rtpnn = new RTPNN::SDP(sensor_type);
     }
 
-    void perform(double value)
+    void perform(double value, JsonObject &obj)
     {
-        m_rtpnn->perform(value);
+        m_rtpnn->perform(value, obj);
     };
 
-    JsonDocument get_weights()
+    void get_weights(JsonDocument& doc)
     {
-        JsonDocument doc;
-        JsonArray array = doc.to<JsonArray>();
-        auto weights = m_rtpnn->get_weights();
+        m_rtpnn->get_weights(doc, m_name);
+    }
 
-        array.add(weights[0]);
-        array.add(weights[1]);
-        array.add(weights[2]);
-        array.add(weights[3]);
-
-        doc["weights"] = array;
-        return doc;
+    void set_weights(std::array<double, 4>& weights)
+    {
+        m_rtpnn->set_weights(weights);
     }
 };

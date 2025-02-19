@@ -13,7 +13,7 @@ namespace RTPNN
         m_levels.push_back((m_level_param_1 * value) + (m_level_param_2 * m_levels.back()));
     }
 
-    void SDP::perform(double& value)
+    void SDP::perform(double& value, JsonObject& obj)
     {
         auto val_norm = normalize(value, m_min, m_max);
         // First execution - Skip calculations, just add value to the Vector<T>
@@ -21,6 +21,10 @@ namespace RTPNN
         {
             calculate_level(val_norm);
             calculate_trend(val_norm);
+            obj["trend"] = m_trends.back();
+            obj["level"] = m_levels.back();
+            serializeJson(obj, Serial);
+            Serial.println();
         }
         m_values.push_back(val_norm);
 
@@ -158,9 +162,22 @@ namespace RTPNN
         m_level_param_2 = m_level_param_2 - (m_lr * 2 / m_values.size()) * sum;
     }
 
-    std::array<double, 4> SDP::get_weights()
+    void SDP::get_weights(JsonDocument& doc, String key)
     {
-        return m_weights;
+        JsonArray array = doc[key].to<JsonArray>();
+
+        array.add(m_weights[0]);
+        array.add(m_weights[1]);
+        array.add(m_weights[2]);
+        array.add(m_weights[3]);
+
+        
+    }
+
+    void SDP::set_weights(std::array<double, 4>& weights)
+    {
+        m_weights = weights;
+        Serial.println("[rTPNN] Weights set W1: " + String(m_weights[0]) + " W2: " + String(m_weights[1]) + " W3: " + String(m_weights[2]) + " W4: " + String(m_weights[3]));
     }
 
     bool SDP::validate_size()
@@ -173,15 +190,18 @@ namespace RTPNN
     }
 
     void SDP::train(){
-        // Update weights
-        m_weights[0] = bptt(m_weights[0], Arg::Trends);
-        m_weights[1] = bptt(m_weights[1], Arg::Levels);
-        m_weights[2] = bptt(m_weights[2], Arg::Values);
-        m_weights[3] = bptt(m_weights[3], Arg::None);
+        int epochs = 3;
+        for(int i = 0; i < epochs; ++i){
+            // Update weights
+            m_weights[0] = bptt(m_weights[0], Arg::Trends);
+            m_weights[1] = bptt(m_weights[1], Arg::Levels);
+            m_weights[2] = bptt(m_weights[2], Arg::Values);
+            m_weights[3] = bptt(m_weights[3], Arg::None);
         
-        // Update trend and level parameters
-        update_trend_params();
-        update_level_params();
+            // Update trend and level parameters
+            update_trend_params();
+            update_level_params();
+        }
 
         // After training, clear the vectors but leave last value
         m_values.erase(m_values.begin(), m_values.end() - 1);
