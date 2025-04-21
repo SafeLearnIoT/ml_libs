@@ -31,7 +31,9 @@ namespace RTPNN
         double m_min = 0.0f;
         double m_max = 0.0f;
 
-        double m_lr = 0.01;
+        double m_lr = 0.001;
+        double m_epochs = 100;
+        int m_train_batch_size = 16;
 
         void calculate_trend(double &value);
         void calculate_level(double &value);

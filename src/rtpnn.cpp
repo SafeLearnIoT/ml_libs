@@ -23,8 +23,6 @@ namespace RTPNN
             calculate_trend(val_norm);
             obj["trend"] = m_trends.back();
             obj["level"] = m_levels.back();
-            serializeJson(obj, Serial);
-            Serial.println();
         }
         m_values.push_back(val_norm);
 
@@ -36,11 +34,9 @@ namespace RTPNN
             Serial.println("Vector sizes are not equal");
         }
         
-        if(training_mode && m_values.size() == 16){
+        if(training_mode && m_values.size() == m_train_batch_size){
             train();
         }
-
-        Serial.println("[rTPNN] Values count: " + String(m_values.size()));
     }
 
     double SDP::predict(double &value)
@@ -200,8 +196,7 @@ namespace RTPNN
     }
 
     void SDP::train(){
-        int epochs = 3;
-        for(int i = 0; i < epochs; ++i){
+        for(int i = 0; i < m_epochs; ++i){
             // Update weights
             m_weights[0] = bptt(m_weights[0], Arg::Trends);
             m_weights[1] = bptt(m_weights[1], Arg::Levels);
@@ -211,6 +206,12 @@ namespace RTPNN
             // Update trend and level parameters
             update_trend_params();
             update_level_params();
+            
+            // Update predictions
+            m_predictions.clear();
+            for (auto value: m_values) {
+                m_predictions.push_back(predict(value));
+            }
         }
 
         // After training, clear the vectors but leave last value
