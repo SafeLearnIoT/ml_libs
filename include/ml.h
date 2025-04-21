@@ -20,18 +20,18 @@ public:
         m_rtpnn = new RTPNN::SDP(sensor_type);
     }
 
-    void perform(double value, JsonObject &obj)
+    void perform(double value, JsonObject &obj, bool training_mode)
     {
-        m_rtpnn->perform(value, obj);
+        m_rtpnn->perform(value, obj, training_mode);
     };
 
-    void get_weights(JsonDocument& doc)
+    void get_params(JsonObject& obj)
     {
-        m_rtpnn->get_weights(doc, m_name);
+        m_rtpnn->get_params(obj, m_name);
     }
 
-    void set_weights(std::array<double, 4>& weights)
+    void set_params(std::array<double, 8> params)
     {
-        m_rtpnn->set_weights(weights);
+        m_rtpnn->set_params(params);
     }
 };

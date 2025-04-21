@@ -52,9 +52,9 @@ namespace RTPNN
             m_min = sensorConfigs.at(sensor_type).minValue;
             m_max = sensorConfigs.at(sensor_type).maxValue;
         };
-        void perform(double& value, JsonObject &obj);
-        void get_weights(JsonDocument& doc, String key);
-        void set_weights(std::array<double, 4>& weights);
+        void perform(double& value, JsonObject &obj, bool training_mode);
+        void get_params(JsonObject& obj, String key);
+        void set_params(std::array<double, 8> weights);
         void train();
     };
 }

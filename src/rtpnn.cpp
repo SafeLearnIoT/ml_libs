@@ -13,7 +13,7 @@ namespace RTPNN
         m_levels.push_back((m_level_param_1 * value) + (m_level_param_2 * m_levels.back()));
     }
 
-    void SDP::perform(double& value, JsonObject& obj)
+    void SDP::perform(double& value, JsonObject& obj, bool training_mode)
     {
         auto val_norm = normalize(value, m_min, m_max);
         // First execution - Skip calculations, just add value to the Vector<T>
@@ -28,13 +28,15 @@ namespace RTPNN
         }
         m_values.push_back(val_norm);
 
-        m_predictions.push_back(predict(val_norm));
+        auto prediction = predict(val_norm);
+        m_predictions.push_back(prediction);
+        obj["prediction_value"] = prediction;
 
         if(!validate_size()){
             Serial.println("Vector sizes are not equal");
         }
         
-        if(m_values.size() == 16){
+        if(training_mode && m_values.size() == 16){
             train();
         }
 
@@ -162,22 +164,30 @@ namespace RTPNN
         m_level_param_2 = m_level_param_2 - (m_lr * 2 / m_values.size()) * sum;
     }
 
-    void SDP::get_weights(JsonDocument& doc, String key)
+    void SDP::get_params(JsonObject& obj, String key)
     {
-        JsonArray array = doc[key].to<JsonArray>();
+        JsonArray array = obj[key].to<JsonArray>();
 
         array.add(m_weights[0]);
         array.add(m_weights[1]);
         array.add(m_weights[2]);
         array.add(m_weights[3]);
-
-        
+        array.add(m_level_param_1);
+        array.add(m_level_param_2);
+        array.add(m_trend_param_1);
+        array.add(m_trend_param_2);   
     }
 
-    void SDP::set_weights(std::array<double, 4>& weights)
+    void SDP::set_params(std::array<double, 8> params)
     {
-        m_weights = weights;
+        m_weights = {params[0], params[1], params[2], params[3]};
+        m_level_param_1 = params[4];
+        m_level_param_2 = params[5];
+        m_trend_param_1 = params[6];
+        m_trend_param_2 = params[7];
+
         Serial.println("[rTPNN] Weights set W1: " + String(m_weights[0]) + " W2: " + String(m_weights[1]) + " W3: " + String(m_weights[2]) + " W4: " + String(m_weights[3]));
+        Serial.println("[rTPNN] Params L1: " + String(m_level_param_1) +  " L2: " + String(m_level_param_2) +" T1: " + String(m_trend_param_1) + " T2:" + String(m_trend_param_2));
     }
 
     bool SDP::validate_size()
